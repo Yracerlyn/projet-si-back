@@ -1,8 +1,8 @@
-package com.projetsiback.projetsiback.service;
+package com.projetsiback.projetsiback.service.user;
 
 import com.projetsiback.projetsiback.models.User;
-import com.projetsiback.projetsiback.models.requests.ResetPasswordRequest;
 import com.projetsiback.projetsiback.repository.UserRepository;
+import com.projetsiback.projetsiback.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

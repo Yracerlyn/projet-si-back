@@ -5,7 +5,7 @@ import com.projetsiback.projetsiback.models.requests.LoginRequest;
 import com.projetsiback.projetsiback.models.requests.RegisterRequest;
 import com.projetsiback.projetsiback.models.User;
 import com.projetsiback.projetsiback.service.JwtService;
-import com.projetsiback.projetsiback.service.UserService;
+import com.projetsiback.projetsiback.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

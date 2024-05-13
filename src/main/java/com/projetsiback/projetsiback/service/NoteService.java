@@ -2,6 +2,7 @@ package com.projetsiback.projetsiback.service;
 
 import com.projetsiback.projetsiback.models.Note;
 import com.projetsiback.projetsiback.repository.NoteRepository;
+import com.projetsiback.projetsiback.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

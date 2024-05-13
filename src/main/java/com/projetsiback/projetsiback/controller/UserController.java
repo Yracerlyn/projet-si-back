@@ -1,10 +1,10 @@
 package com.projetsiback.projetsiback.controller;
 
-import com.projetsiback.projetsiback.service.UserService;
+import com.projetsiback.projetsiback.models.dtos.UserDto;
+import com.projetsiback.projetsiback.service.user.UserDtoMapper;
+import com.projetsiback.projetsiback.service.user.UserService;
 import com.projetsiback.projetsiback.models.User;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserDtoMapper userDtoMapper;
+
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable int userId) {
-        User userDto = userService.getUserById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable int userId) {
+        UserDto userDto = userDtoMapper.apply(userService.getUserById(userId));
         if (userDto != null) {
             return ResponseEntity.ok().body(userDto);
         } else {
@@ -26,14 +28,14 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDto> getCurrentUser() {
         ///////////////////
         return null;
     }
 
     @PutMapping("/mise-a-jour")
-    public ResponseEntity<User> updateUser(@RequestBody User newUser) {
-        User updatedUser = userService.updateUser(newUser);
+    public ResponseEntity<UserDto> updateUser(@RequestBody User newUser) {
+        UserDto updatedUser = userDtoMapper.apply(userService.updateUser(newUser));
         if (updatedUser != null) {
             return ResponseEntity.ok().body(updatedUser);
         } else {
@@ -41,12 +43,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/reinitialiser-mot-de-passe")
-    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
-        User currentUser = getCurrentUser().getBody();
-        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
-        return ResponseEntity.ok().body(motDePasseChange);
-    }
+//    @PostMapping("/reinitialiser-mot-de-passe")
+//    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
+//        User currentUser = getCurrentUser().getBody();
+//        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
+//        return ResponseEntity.ok().body(motDePasseChange);
+//    }
 
     @PostMapping("/reinitialiser-mot-de-passe-user")
     public ResponseEntity<Boolean> resetUserPassword(@RequestParam int userId, @RequestParam String newPassword) {
