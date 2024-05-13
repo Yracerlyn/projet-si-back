@@ -2,7 +2,7 @@ package com.projetsiback.projetsiback.controller;
 
 import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.Command;
-import com.projetsiback.projetsiback.service.CommandService;
+import com.projetsiback.projetsiback.service.command.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

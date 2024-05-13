@@ -4,7 +4,7 @@ import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.CategorieDto;
 import com.projetsiback.projetsiback.models.Like;
 import com.projetsiback.projetsiback.models.Product;
-import com.projetsiback.projetsiback.service.ProductService;
+import com.projetsiback.projetsiback.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
