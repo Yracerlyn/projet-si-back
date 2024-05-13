@@ -13,6 +13,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +34,7 @@ public class SecurityConfiguration {
                 )
                 .authenticationProvider(authenticationProvider)
                 .sessionManagement(Customizer.withDefaults())
-                .addFilterBefore(jwtAuthFilter, AuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, BasicAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
