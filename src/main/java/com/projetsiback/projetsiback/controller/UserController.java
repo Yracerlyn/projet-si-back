@@ -6,6 +6,8 @@ import com.projetsiback.projetsiback.service.user.UserService;
 import com.projetsiback.projetsiback.models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,8 +31,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<UserDto> getCurrentUser() {
-        ///////////////////
-        return null;
+        return ResponseEntity.ok().body(userDtoMapper.apply(userService.getCurrentUser()));
     }
 
     @PutMapping("/mise-a-jour")
@@ -43,12 +44,12 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/reinitialiser-mot-de-passe")
-//    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
-//        User currentUser = getCurrentUser().getBody();
-//        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
-//        return ResponseEntity.ok().body(motDePasseChange);
-//    }
+    @PostMapping("/reinitialiser-mot-de-passe")
+    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
+        User currentUser = userService.getCurrentUser();
+        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
+        return ResponseEntity.ok().body(motDePasseChange);
+    }
 
     @PostMapping("/reinitialiser-mot-de-passe-user")
     public ResponseEntity<Boolean> resetUserPassword(@RequestParam int userId, @RequestParam String newPassword) {

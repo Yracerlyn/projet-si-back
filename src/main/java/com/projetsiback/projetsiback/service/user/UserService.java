@@ -4,6 +4,10 @@ import com.projetsiback.projetsiback.models.User;
 import com.projetsiback.projetsiback.repository.UserRepository;
 import com.projetsiback.projetsiback.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +15,9 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     public User addUser(User user){
         return userRepository.save(user);
@@ -63,9 +66,8 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        /////////////////////////
-        ////////////////////////
-        return null;
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByMail(email);
     }
 
     public boolean resetPassword(String email, String currentPassword, String newPassword) {
@@ -101,5 +103,10 @@ public class UserService {
     public boolean deleteAccount(int userId) {
         userRepository.deleteById(userId);
         return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByMail(username);
     }
 }
