@@ -1,42 +1,68 @@
 package com.projetsiback.projetsiback.controller;
 
 import com.projetsiback.projetsiback.service.UserService;
-import lombok.RequiredArgsConstructor;
 import com.projetsiback.projetsiback.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.projetsiback.projetsiback.repository.UserRepository;
-
-import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
-@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    private final UserRepository userRepository;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user){
-        return userService.addUser(user);
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable int userId) {
+        User userDto = userService.getUserById(userId);
+        if (userDto != null) {
+            return ResponseEntity.ok().body(userDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping
-    public List<User> getUsers(){
-        return userService.findAllUsers();
+    @GetMapping("/user")
+    public ResponseEntity<User> getCurrentUser() {
+        ///////////////////
+        return null;
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable int id){
-        return userService.getUserById(id);
+    @PutMapping("/mise-a-jour")
+    public ResponseEntity<User> updateUser(@RequestBody User newUser) {
+        User updatedUser = userService.updateUser(newUser);
+        if (updatedUser != null) {
+            return ResponseEntity.ok().body(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteUserById(@PathVariable int id){
-        return userService.deleteUser(id);
+    @PostMapping("/reinitialiser-mot-de-passe")
+    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
+        User currentUser = getCurrentUser().getBody();
+        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
+        return ResponseEntity.ok().body(motDePasseChange);
+    }
+
+    @PostMapping("/reinitialiser-mot-de-passe-user")
+    public ResponseEntity<Boolean> resetUserPassword(@RequestParam int userId, @RequestParam String newPassword) {
+        boolean motDePasseChange = userService.resetUserPassword(userId, newPassword);
+        return ResponseEntity.ok().body(motDePasseChange);
+    }
+
+    @PostMapping("/valider-compte")
+    public ResponseEntity<Boolean> validateAccount(@RequestParam int userId) {
+        boolean compteValide = userService.validateAccount(userId);
+        return ResponseEntity.ok().body(compteValide);
+    }
+
+    @PostMapping("/radier-compte")
+    public ResponseEntity<Boolean> deleteAccount(@RequestParam int userId) {
+        boolean compteRadie = userService.deleteAccount(userId);
+        return ResponseEntity.ok().body(compteRadie);
     }
 }

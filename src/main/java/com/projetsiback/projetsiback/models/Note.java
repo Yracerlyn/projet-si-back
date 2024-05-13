@@ -9,23 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("users")
-public class User {
+@Document("notes")
+public class Note {
     @Id
     private int id;
-
-    private String mail;
-
-    private String password;
-
-    private String avatar;
-
-    private String lastName;
-
-    private String firstName;
-
-    private String address;
-
-    private int companyNote;
-    private boolean accountValidated;
+    private int userId;
+    private int productId;
+    private int noteValue;
 }
