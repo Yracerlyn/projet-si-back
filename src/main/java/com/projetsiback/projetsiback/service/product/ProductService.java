@@ -1,4 +1,4 @@
-package com.projetsiback.projetsiback.service;
+package com.projetsiback.projetsiback.service.product;
 
 import com.projetsiback.projetsiback.models.CategorieDto;
 import com.projetsiback.projetsiback.models.Product;

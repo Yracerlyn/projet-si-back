@@ -1,4 +1,4 @@
-package com.projetsiback.projetsiback.service;
+package com.projetsiback.projetsiback.service.command;
 
 import com.projetsiback.projetsiback.models.Command;
 import com.projetsiback.projetsiback.repository.CommandRepository;
