@@ -1,5 +1,6 @@
 package com.projetsiback.projetsiback.controller;
 
+import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.AuthResponse;
 import com.projetsiback.projetsiback.models.requests.LoginRequest;
 import com.projetsiback.projetsiback.models.requests.RegisterRequest;
@@ -40,17 +41,21 @@ public class AuthenticationController {
 
     @PostMapping("/creer-compte")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        User user = new User();
-        user.setMail(registerRequest.getEmail());
-        user.setFirstName(registerRequest.getFirstName());
-        user.setLastName(registerRequest.getLastName());
-        user.setAddress(registerRequest.getAddress());
-        user.setPassword(registerRequest.getPassword());
-        userService.addUser(user);
+        try {
+            User user = new User();
+            user.setMail(registerRequest.getEmail());
+            user.setFirstName(registerRequest.getFirstName());
+            user.setLastName(registerRequest.getLastName());
+            user.setAddress(registerRequest.getAddress());
+            user.setPassword(registerRequest.getPassword());
+            userService.addUser(user);
 
-        String token = jwtService.generateToken(user.getMail());
-        String refreshToken = generateRefreshToken();
-        return ResponseEntity.ok().body(new AuthResponse(token, refreshToken));
+            String token = jwtService.generateToken(user.getMail());
+            String refreshToken = generateRefreshToken();
+            return ResponseEntity.ok().body(new AuthResponse(token, refreshToken));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new Message(e.getMessage()));
+        }
     }
 
     private String generateRefreshToken() {

@@ -37,31 +37,36 @@ public class ProductController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<Message> likeProduct(@RequestBody Like like) {
+    public ResponseEntity<?> likeProduct(@RequestBody Like like) {
         boolean produitLike = productService.likeProduct(like.getProduct().getId(), like.getUser().getId());
-        String messageContent = produitLike ? "Product liked successfully" : "Failed to like the product";
-        return ResponseEntity.ok().body(new Message(messageContent));
+        if (produitLike) {
+            return ResponseEntity.ok().body(like);
+        } else {
+            return ResponseEntity.badRequest().body(new Message("Failed to like the product"));
+        }
     }
 
     @PostMapping("/unlike")
-    public ResponseEntity<Message> unlikeProduct(@RequestBody Like like) {
+    public ResponseEntity<?> unlikeProduct(@RequestBody Like like) {
         boolean produitLike = productService.unlikeProduct(like.getProduct().getId(), like.getUser().getId());
-        String messageContent = produitLike ? "Product unliked successfully" : "Failed to unlike the product";
-        return ResponseEntity.ok().body(new Message(messageContent));
+        if (produitLike) {
+            return ResponseEntity.ok().body(like);
+        } else {
+            return ResponseEntity.badRequest().body(new Message("Failed to unlike the product"));
+        }
     }
 
     @PostMapping("/ajouter-produit")
-    public ResponseEntity<Message> addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
         boolean produitAjoute = productService.addProduct(product);
         if (produitAjoute) {
-            return ResponseEntity.ok().body(new Message("Product added successfully"));
+            return ResponseEntity.ok().body(product);
         } else {
             return ResponseEntity.badRequest().body(new Message("Failed to add product: " + product.getId()));
         }
     }
-
     @DeleteMapping("/supprimer-produit")
-    public ResponseEntity<Message> deleteProduct(@RequestBody int productId) {
+    public ResponseEntity<?> deleteProduct(@RequestBody int productId) {
         boolean produitSupprime = productService.deleteProduct(productId);
         if (produitSupprime) {
             return ResponseEntity.ok().body(new Message("Product deleted successfully"));
@@ -71,12 +76,13 @@ public class ProductController {
     }
 
     @PutMapping("/mettre-a-jour")
-    public ResponseEntity<Message> updateProduct(@RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
         boolean produitMisAJour = productService.updateProduct(product);
         if (produitMisAJour) {
-            return ResponseEntity.ok().body(new Message("Product updated successfully"));
+            return ResponseEntity.ok().body(product);
         } else {
             return ResponseEntity.badRequest().body(new Message("Failed to update product"));
         }
     }
+
 }

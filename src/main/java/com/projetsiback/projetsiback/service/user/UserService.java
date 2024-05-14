@@ -19,7 +19,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public User addUser(User user){
+    public User addUser(User user) {
+        if (userRepository.existsByMail(user.getMail())) {
+            throw new RuntimeException("Email already exists");
+        }
         return userRepository.save(user);
     }
 

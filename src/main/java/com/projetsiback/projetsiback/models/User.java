@@ -19,7 +19,6 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     private int id;
-
     private String mail;
 
     private String password;

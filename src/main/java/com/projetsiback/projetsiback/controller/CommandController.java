@@ -18,20 +18,22 @@ public class CommandController {
     private CommandService commandService;
 
     @GetMapping("/get-commandes/{userId}")
-    public ResponseEntity<List<Command>> getCommandes(@PathVariable int userId) {
+    public ResponseEntity<?> getCommandes(@PathVariable int userId) {
         List<Command> commandes = commandService.getCommandsByUserId(userId);
-        return ResponseEntity.ok().body(commandes);
+        if (!commandes.isEmpty()) {
+            return ResponseEntity.ok().body(commandes);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("Aucune commande trouvée pour l'utilisateur avec l'ID : " + userId));
+        }
     }
 
     @PostMapping("/commander")
-    public ResponseEntity<Message> commander(@RequestBody Command command) {
+    public ResponseEntity<?> commander(@RequestBody Command command) {
         boolean commandeValide = commandService.createCommand(command);
         if (commandeValide) {
-            Message message = new Message("La commande a été validement créée.");
-            return ResponseEntity.ok().body(message);
+            return ResponseEntity.ok().body(command);
         } else {
-            Message message = new Message("La commande n'a pas pu être créée.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La commande n'a pas pu être créée."));
         }
     }
 }
