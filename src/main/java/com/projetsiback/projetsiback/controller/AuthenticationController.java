@@ -2,6 +2,7 @@ package com.projetsiback.projetsiback.controller;
 
 import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.AuthResponse;
+import com.projetsiback.projetsiback.models.Role;
 import com.projetsiback.projetsiback.models.requests.LoginRequest;
 import com.projetsiback.projetsiback.models.requests.RegisterRequest;
 import com.projetsiback.projetsiback.models.User;
@@ -43,11 +44,13 @@ public class AuthenticationController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
             User user = new User();
+            user.setId(registerRequest.getUserId());
             user.setMail(registerRequest.getEmail());
             user.setFirstName(registerRequest.getFirstName());
             user.setLastName(registerRequest.getLastName());
             user.setAddress(registerRequest.getAddress());
             user.setPassword(registerRequest.getPassword());
+            user.setRole(Role.USER);
             userService.addUser(user);
 
             String token = jwtService.generateToken(user.getMail());

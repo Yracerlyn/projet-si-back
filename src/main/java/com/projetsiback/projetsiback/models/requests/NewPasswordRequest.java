@@ -8,12 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("registerRequests")
-public class RegisterRequest {
-    private int userId;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String password;
+@Document("newPasswordRequest")
+public class NewPasswordRequest {
+    private String currentPassword;
+    private String newPassword;
 }

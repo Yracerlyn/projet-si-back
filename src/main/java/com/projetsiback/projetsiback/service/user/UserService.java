@@ -3,7 +3,9 @@ package com.projetsiback.projetsiback.service.user;
 import com.projetsiback.projetsiback.models.User;
 import com.projetsiback.projetsiback.repository.UserRepository;
 import com.projetsiback.projetsiback.service.JwtService;
+import com.projetsiback.projetsiback.service.SequenceGeneratorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,12 +21,18 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    private final SequenceGeneratorService sequenceGenerator;
+
+
     public User addUser(User user) {
         if (userRepository.existsByMail(user.getMail())) {
             throw new RuntimeException("Email already exists");
         }
+        int nextId = sequenceGenerator.generateSequence("userId");
+        user.setId(nextId);
         return userRepository.save(user);
     }
+
 
     public List<User> findAllUsers(){
         return userRepository.findAll();
@@ -69,9 +77,14 @@ public class UserService implements UserDetailsService {
     }
 
     public User getCurrentUser() {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByMail(email);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            return (User) authentication.getPrincipal();
+        } else {
+            throw new IllegalStateException("Utilisateur non authentifié ou impossible à récupérer.");
+        }
     }
+
 
     public boolean resetPassword(String email, String currentPassword, String newPassword) {
         User user = userRepository.findByMailAndPassword(email, currentPassword);

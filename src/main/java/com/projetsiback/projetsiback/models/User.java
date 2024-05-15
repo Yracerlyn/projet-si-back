@@ -20,27 +20,36 @@ public class User implements UserDetails {
     @Id
     private int id;
     private String mail;
-
     private String password;
-
     private String avatar;
-
     private String lastName;
-
     private String firstName;
-
     private String address;
-
     private int companyNote;
-
     private Role role;
-
     private boolean accountValidated;
+
+    // Ajoutez le constructeur pour une nouvelle instance de User
+    public User(String mail, String password, String avatar, String lastName, String firstName, String address, int companyNote, Role role, boolean accountValidated) {
+        this.mail = mail;
+        this.password = password;
+        this.avatar = avatar;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.address = address;
+        this.companyNote = companyNote;
+        this.role = role;
+        this.accountValidated = accountValidated;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
-        return Collections.singletonList(authority);
+        if (role != null) {
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+            return Collections.singletonList(authority);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

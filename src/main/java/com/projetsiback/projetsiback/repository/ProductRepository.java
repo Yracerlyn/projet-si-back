@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends MongoRepository<com.projetsiback.projetsiback.models.Product, Integer> {
+public interface ProductRepository extends MongoRepository<Product, Integer> {
     List<Product> findByCategory(String category);
     Product findById(int id);
     @Aggregation("{ $group: { _id: '$category' } }")

@@ -1,6 +1,9 @@
 package com.projetsiback.projetsiback.models.dtos;
 
 import com.projetsiback.projetsiback.models.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;

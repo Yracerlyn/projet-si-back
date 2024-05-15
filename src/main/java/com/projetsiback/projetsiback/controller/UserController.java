@@ -1,6 +1,9 @@
 package com.projetsiback.projetsiback.controller;
 
+import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.dtos.UserDto;
+import com.projetsiback.projetsiback.models.requests.NewPasswordRequest;
+import com.projetsiback.projetsiback.models.requests.ResetPasswordRequest;
 import com.projetsiback.projetsiback.service.user.UserDtoMapper;
 import com.projetsiback.projetsiback.service.user.UserService;
 import com.projetsiback.projetsiback.models.User;
@@ -45,27 +48,29 @@ public class UserController {
     }
 
     @PostMapping("/reinitialiser-mot-de-passe")
-    public ResponseEntity<Boolean> resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
+    public ResponseEntity<Boolean> resetPassword(@RequestBody NewPasswordRequest newPasswordRequest) {
         User currentUser = userService.getCurrentUser();
-        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), currentPassword, newPassword);
+        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), newPasswordRequest.getCurrentPassword(), newPasswordRequest.getNewPassword());
         return ResponseEntity.ok().body(motDePasseChange);
     }
 
     @PostMapping("/reinitialiser-mot-de-passe-user")
-    public ResponseEntity<Boolean> resetUserPassword(@RequestParam int userId, @RequestParam String newPassword) {
-        boolean motDePasseChange = userService.resetUserPassword(userId, newPassword);
+    public ResponseEntity<Boolean> resetUserPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        boolean motDePasseChange = userService.resetUserPassword(resetPasswordRequest.getId(), resetPasswordRequest.getNewPassword());
         return ResponseEntity.ok().body(motDePasseChange);
     }
 
-    @PostMapping("/valider-compte")
-    public ResponseEntity<Boolean> validateAccount(@RequestParam int userId) {
+    @PostMapping("/valider-compte/{userId}")
+    public ResponseEntity<?> validateAccount(@PathVariable int userId) {
         boolean compteValide = userService.validateAccount(userId);
-        return ResponseEntity.ok().body(compteValide);
+        if(compteValide)return ResponseEntity.badRequest().body(new Message("Compte validé"));
+        return ResponseEntity.badRequest().body(new Message("Erreur : compte non validé"));
     }
 
-    @PostMapping("/radier-compte")
-    public ResponseEntity<Boolean> deleteAccount(@RequestParam int userId) {
+    @PostMapping("/radier-compte/{userId}")
+    public ResponseEntity<?> deleteAccount(@PathVariable int userId) {
         boolean compteRadie = userService.deleteAccount(userId);
-        return ResponseEntity.ok().body(compteRadie);
+        if(compteRadie) return ResponseEntity.badRequest().body(new Message("Compte radié"));
+        return ResponseEntity.badRequest().body(new Message("Erreur : compte non radié"));
     }
 }

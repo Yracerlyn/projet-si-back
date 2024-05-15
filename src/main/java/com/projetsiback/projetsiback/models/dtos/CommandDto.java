@@ -6,6 +6,7 @@ import com.projetsiback.projetsiback.models.User;
 import java.time.LocalDateTime;
 
 public record CommandDto(
+        int id,
         UserDto userDto,
         ProductDto productDto,
         LocalDateTime commandDateTime

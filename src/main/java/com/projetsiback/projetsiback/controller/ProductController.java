@@ -4,19 +4,28 @@ import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.models.CategorieDto;
 import com.projetsiback.projetsiback.models.Like;
 import com.projetsiback.projetsiback.models.Product;
+import com.projetsiback.projetsiback.models.dtos.ProductDto;
+import com.projetsiback.projetsiback.service.product.ProductDtoMapper;
 import com.projetsiback.projetsiback.service.product.ProductService;
+import com.projetsiback.projetsiback.service.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/produit")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final UserService userService;
+    private final ProductDtoMapper productDtoMapper;
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategorieDto>> getAllCategories() {
@@ -36,21 +45,21 @@ public class ProductController {
         return ResponseEntity.ok().body(produit);
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<?> likeProduct(@RequestBody Like like) {
-        boolean produitLike = productService.likeProduct(like.getProduct().getId(), like.getUser().getId());
+    @PostMapping("/like/{produitId}")
+    public ResponseEntity<?> likeProduct(@PathVariable String produitId) {
+        boolean produitLike = productService.likeProduct(Integer.parseInt(produitId));
         if (produitLike) {
-            return ResponseEntity.ok().body(like);
+            return ResponseEntity.ok().body(new Like(userService.getCurrentUser(), productService.getProductById(Integer.parseInt(produitId)), LocalDateTime.now()));
         } else {
             return ResponseEntity.badRequest().body(new Message("Failed to like the product"));
         }
     }
 
-    @PostMapping("/unlike")
-    public ResponseEntity<?> unlikeProduct(@RequestBody Like like) {
-        boolean produitLike = productService.unlikeProduct(like.getProduct().getId(), like.getUser().getId());
+    @PostMapping("/unlike/{produitId}")
+    public ResponseEntity<?> unlikeProduct(@PathVariable int produitId) {
+        boolean produitLike = productService.unlikeProduct(produitId);
         if (produitLike) {
-            return ResponseEntity.ok().body(like);
+            return ResponseEntity.badRequest().body(new Message("Unliked the product"));
         } else {
             return ResponseEntity.badRequest().body(new Message("Failed to unlike the product"));
         }
@@ -58,15 +67,15 @@ public class ProductController {
 
     @PostMapping("/ajouter-produit")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
-        boolean produitAjoute = productService.addProduct(product);
-        if (produitAjoute) {
-            return ResponseEntity.ok().body(product);
+        boolean addedProduct = productService.addProduct(product);
+        if (addedProduct) {
+            return ResponseEntity.ok().body(new Message("Produit ajouté avec succès. ID du produit : " + product.getId()));
         } else {
-            return ResponseEntity.badRequest().body(new Message("Failed to add product: " + product.getId()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Échec de l'ajout du produit"));
         }
     }
-    @DeleteMapping("/supprimer-produit")
-    public ResponseEntity<?> deleteProduct(@RequestBody int productId) {
+    @DeleteMapping("/supprimer-produit/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable int productId) {
         boolean produitSupprime = productService.deleteProduct(productId);
         if (produitSupprime) {
             return ResponseEntity.ok().body(new Message("Product deleted successfully"));

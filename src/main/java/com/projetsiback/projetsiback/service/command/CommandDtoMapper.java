@@ -19,6 +19,7 @@ public class CommandDtoMapper implements Function<Command, CommandDto> {
     @Override
     public CommandDto apply(Command command) {
         return new CommandDto(
+                command.getId(),
                 userDtoMapper.apply(command.getUser()),
                 productDtoMapper.apply(command.getProduct()),
                 command.getCommandDateTime());

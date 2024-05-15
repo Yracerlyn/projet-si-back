@@ -10,6 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document("resetPasswordRequests")
 public class ResetPasswordRequest {
-    private String email;
+    private int id;
     private String newPassword;
 }

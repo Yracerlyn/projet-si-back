@@ -9,10 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("notes")
-public class Note {
+@Document("sequences")
+public class Sequence {
     @Id
-    private int id;
-    private int userId;
-    private int noteValue;
+    private String id;
+    private int seq;
 }
