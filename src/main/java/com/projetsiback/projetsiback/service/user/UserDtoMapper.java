@@ -17,6 +17,6 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 user.getFirstName(),
                 user.getAddress(),
                 user.getCompanyNote(),
-                user.isAccountValidated());
+                user.getAccountStatus());
     }
 }

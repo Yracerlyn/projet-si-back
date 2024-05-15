@@ -4,11 +4,12 @@ import com.projetsiback.projetsiback.models.Product;
 import com.projetsiback.projetsiback.models.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record CommandDto(
         int id,
         UserDto userDto,
-        ProductDto productDto,
+        List<ProductDto> productDto,
         LocalDateTime commandDateTime
 ) {
 

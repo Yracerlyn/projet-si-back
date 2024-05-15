@@ -14,8 +14,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,15 +53,15 @@ public class ProductService {
         Product product = productRepository.findById(productId);
         Optional<User> user = userRepository.findById(userService.getCurrentUser().getId());
 
-        if (product != null && user != null) {
-            if (!product.getLikedBy().contains(user)) {
+        if (product != null && user.isPresent()) {
+            if (!product.getLikedBy().contains(user.get())) {
                 product.getLikedBy().add(user.orElse(null));
                 product.setNbLike(product.getNbLike() + 1);
                 productRepository.save(product);
                 return true;
             }
         }
-        return false; // Retourne false si le produit ou l'utilisateur n'existe pas, ou si le produit a déjà été aimé par l'utilisateur
+        return false;
     }
 
     public boolean unlikeProduct(int productId) {
@@ -74,22 +76,30 @@ public class ProductService {
                 return true;
             }
         }
-        return false; // Retourne false si le produit ou l'utilisateur n'existe pas, ou si le produit n'a pas été aimé par l'utilisateur
+        return false;
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean addProduct(Product product) {
         int productId = sequenceGeneratorService.generateSequence("productId");
         product.setId(productId);
+        product.setAddedDate(LocalDateTime.now());
+        product.setModifiedDate(LocalDateTime.now());
+        product.setManagedBy(userService.getCurrentUser());
+        product.setNbLike(0);
         productRepository.save(product);
 
         return true;
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean updateProduct(com.projetsiback.projetsiback.models.Product product) {
         productRepository.save(product);
         return true;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean deleteProduct(int productId) {
         productRepository.deleteById(productId);
         return true;

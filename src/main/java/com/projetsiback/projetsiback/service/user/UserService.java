@@ -1,10 +1,13 @@
 package com.projetsiback.projetsiback.service.user;
 
+import com.projetsiback.projetsiback.models.AccountStatus;
 import com.projetsiback.projetsiback.models.User;
 import com.projetsiback.projetsiback.repository.UserRepository;
 import com.projetsiback.projetsiback.service.JwtService;
 import com.projetsiback.projetsiback.service.SequenceGeneratorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +24,6 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    private final SequenceGeneratorService sequenceGenerator;
-
-
-    public User addUser(User user) {
-        if (userRepository.existsByMail(user.getMail())) {
-            throw new RuntimeException("Email already exists");
-        }
-        int nextId = sequenceGenerator.generateSequence("userId");
-        user.setId(nextId);
-        return userRepository.save(user);
-    }
-
 
     public List<User> findAllUsers(){
         return userRepository.findAll();
@@ -48,10 +39,6 @@ public class UserService implements UserDetailsService {
             return id + " User deleted from database";
         }
         return "No user with this Id";
-    }
-
-    public User validateUser(String email, String password) {
-        return userRepository.findByMailAndPassword(email, password);
     }
 
     public boolean changePassword(int userId, String newPassword) {
@@ -109,16 +96,20 @@ public class UserService implements UserDetailsService {
     public boolean validateAccount(int userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
-            user.setAccountValidated(true);
+            user.setAccountStatus(AccountStatus.VALIDE);
             userRepository.save(user);
             return true;
         }
         return false;
     }
 
-    public boolean deleteAccount(int userId) {
-        userRepository.deleteById(userId);
-        return true;
+    public boolean banAccount(int userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()){
+            user.get().setAccountStatus(AccountStatus.RADIE);
+            userRepository.save(user.get());
+            return true;
+        }return false;
     }
 
     @Override

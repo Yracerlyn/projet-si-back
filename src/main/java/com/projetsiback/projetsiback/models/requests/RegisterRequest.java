@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document("registerRequests")
 public class RegisterRequest {
-    private int userId;
     private String email;
     private String firstName;
     private String lastName;

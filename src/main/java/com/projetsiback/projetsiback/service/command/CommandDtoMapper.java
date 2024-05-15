@@ -21,7 +21,7 @@ public class CommandDtoMapper implements Function<Command, CommandDto> {
         return new CommandDto(
                 command.getId(),
                 userDtoMapper.apply(command.getUser()),
-                productDtoMapper.apply(command.getProduct()),
+                command.getProducts().stream().map(productDtoMapper).toList(),
                 command.getCommandDateTime());
     }
 }

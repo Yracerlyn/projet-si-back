@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,6 @@ public class Command {
     @Id
     int id;
     private User user;
-    private Product product;
+    private List<Product> products;
     LocalDateTime commandDateTime;
 }

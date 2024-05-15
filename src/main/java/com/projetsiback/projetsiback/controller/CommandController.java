@@ -21,14 +21,10 @@ public class CommandController {
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
 
-    @GetMapping("/get-commandes/{userId}")
-    public ResponseEntity<?> getCommandes(@PathVariable int userId) {
-        List<Command> commandes = commandService.getCommandsByUserId(userId);
-        if (!commandes.isEmpty()) {
-            return ResponseEntity.ok().body(commandes);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("Aucune commande trouvée pour l'utilisateur avec l'ID : " + userId));
-        }
+    @GetMapping("/get-commandes/")
+    public ResponseEntity<?> getCommandes() {
+        List<Command> commandes = commandService.getCommandsByUserId();
+        return ResponseEntity.ok().body(commandes);
     }
 
     @PostMapping("/commander")

@@ -1,5 +1,7 @@
 package com.projetsiback.projetsiback.models.dtos;
 
+import com.projetsiback.projetsiback.models.AccountStatus;
+
 public record UserDto(
          int id,
          String mail,
@@ -8,7 +10,7 @@ public record UserDto(
          String firstName,
          String address,
          int companyNote,
-         boolean accountValidated
+         AccountStatus accountStatus
 ) {
 
 }

@@ -12,6 +12,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AuthResponse {
 
     private String token;
-    private String refreshToken;
-
+    private Role role;
 }

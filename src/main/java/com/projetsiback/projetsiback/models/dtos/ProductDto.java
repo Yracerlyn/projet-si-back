@@ -17,10 +17,10 @@ public record ProductDto(
         double discount,
         double price,
         String description,
-        double note,
         String comment,
         UserDto managedBy,
         LocalDateTime addedDate,
-        LocalDateTime modifiedDate
+        LocalDateTime modifiedDate,
+        int stock
         ) {
 }

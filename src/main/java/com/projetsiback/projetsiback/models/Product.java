@@ -23,9 +23,10 @@ public class Product {
     private double discount;
     private double price;
     private String description;
-    private double note;
+    private int stock;
     private String comment;
     private User managedBy;
     private LocalDateTime addedDate;
     private LocalDateTime modifiedDate;
+    private String image;
 }

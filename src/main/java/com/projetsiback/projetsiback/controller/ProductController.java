@@ -51,7 +51,7 @@ public class ProductController {
         if (produitLike) {
             return ResponseEntity.ok().body(new Like(userService.getCurrentUser(), productService.getProductById(Integer.parseInt(produitId)), LocalDateTime.now()));
         } else {
-            return ResponseEntity.badRequest().body(new Message("Failed to like the product"));
+            return ResponseEntity.internalServerError().body(new Message("Failed to like the product"));
         }
     }
 
@@ -61,7 +61,7 @@ public class ProductController {
         if (produitLike) {
             return ResponseEntity.badRequest().body(new Message("Unliked the product"));
         } else {
-            return ResponseEntity.badRequest().body(new Message("Failed to unlike the product"));
+            return ResponseEntity.internalServerError().body(new Message("Failed to unlike the product"));
         }
     }
 
@@ -71,16 +71,20 @@ public class ProductController {
         if (addedProduct) {
             return ResponseEntity.ok().body(new Message("Produit ajouté avec succès. ID du produit : " + product.getId()));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Échec de l'ajout du produit"));
+            return ResponseEntity.internalServerError().body(new Message("Échec de l'ajout du produit"));
         }
     }
     @DeleteMapping("/supprimer-produit/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable int productId) {
+        Product product = productService.getProductById(productId);
+        if(product.getStock() > 0){
+            return ResponseEntity.badRequest().body(new Message("Stock not empty"));
+        }
         boolean produitSupprime = productService.deleteProduct(productId);
         if (produitSupprime) {
             return ResponseEntity.ok().body(new Message("Product deleted successfully"));
         } else {
-            return ResponseEntity.badRequest().body(new Message("Failed to delete product"));
+            return ResponseEntity.internalServerError().body(new Message("Failed to delete product"));
         }
     }
 
@@ -90,7 +94,7 @@ public class ProductController {
         if (produitMisAJour) {
             return ResponseEntity.ok().body(product);
         } else {
-            return ResponseEntity.badRequest().body(new Message("Failed to update product"));
+            return ResponseEntity.internalServerError().body(new Message("Failed to update product"));
         }
     }
 

@@ -21,17 +21,17 @@ public class ProductDtoMapper implements Function<Product, ProductDto> {
                 product.getName(),
                 product.getNbLike(),
                 product.getLikedBy().stream()
-                        .map(userDtoMapper::apply)
+                        .map(userDtoMapper)
                         .collect(Collectors.toList()),
                 product.getCategory(),
                 product.getDiscount(),
                 product.getPrice(),
                 product.getDescription(),
-                product.getNote(),
                 product.getComment(),
                 userDtoMapper.apply(product.getManagedBy()),
                 product.getAddedDate(),
-                product.getModifiedDate());
+                product.getModifiedDate(),
+                product.getStock());
 
     }
 }

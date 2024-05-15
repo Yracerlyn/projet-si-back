@@ -27,10 +27,10 @@ public class User implements UserDetails {
     private String address;
     private int companyNote;
     private Role role;
-    private boolean accountValidated;
+    private AccountStatus accountStatus;
 
     // Ajoutez le constructeur pour une nouvelle instance de User
-    public User(String mail, String password, String avatar, String lastName, String firstName, String address, int companyNote, Role role, boolean accountValidated) {
+    public User(String mail, String password, String avatar, String lastName, String firstName, String address, int companyNote, Role role, AccountStatus accountStatus) {
         this.mail = mail;
         this.password = password;
         this.avatar = avatar;
@@ -39,7 +39,7 @@ public class User implements UserDetails {
         this.address = address;
         this.companyNote = companyNote;
         this.role = role;
-        this.accountValidated = accountValidated;
+        this.accountStatus = accountStatus;
     }
 
     @Override
@@ -64,12 +64,12 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return accountValidated;
+        return accountStatus != AccountStatus.RADIE;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override

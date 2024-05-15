@@ -9,6 +9,7 @@ import com.projetsiback.projetsiback.service.user.UserService;
 import com.projetsiback.projetsiback.models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/reinitialiser-mot-de-passe-user")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Boolean> resetUserPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         boolean motDePasseChange = userService.resetUserPassword(resetPasswordRequest.getId(), resetPasswordRequest.getNewPassword());
         return ResponseEntity.ok().body(motDePasseChange);
@@ -62,15 +64,11 @@ public class UserController {
 
     @PostMapping("/valider-compte/{userId}")
     public ResponseEntity<?> validateAccount(@PathVariable int userId) {
-        boolean compteValide = userService.validateAccount(userId);
-        if(compteValide)return ResponseEntity.badRequest().body(new Message("Compte validé"));
-        return ResponseEntity.badRequest().body(new Message("Erreur : compte non validé"));
+        return ResponseEntity.ok(userService.validateAccount(userId));
     }
 
     @PostMapping("/radier-compte/{userId}")
-    public ResponseEntity<?> deleteAccount(@PathVariable int userId) {
-        boolean compteRadie = userService.deleteAccount(userId);
-        if(compteRadie) return ResponseEntity.badRequest().body(new Message("Compte radié"));
-        return ResponseEntity.badRequest().body(new Message("Erreur : compte non radié"));
+    public ResponseEntity<?> banAccount(@PathVariable int userId) {
+        return ResponseEntity.ok(userService.banAccount(userId));
     }
 }
