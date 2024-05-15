@@ -19,12 +19,18 @@ public class NoteService {
         if (noteValue < 0 || noteValue > 10) {
             return false;
         }
-        int noteId = sequenceGeneratorService.generateSequence("noteId");
-        Note note = new Note();
-        note.setId(noteId);
-        note.setUserId(userService.getCurrentUser().getId());
-        note.setNoteValue(noteValue);
-        noteRepository.save(note);
+        if(noteRepository.existsNoteByUserId(String.valueOf(userService.getCurrentUser().getId()))){
+            Note note = noteRepository.findByUserId(String.valueOf(userService.getCurrentUser().getId()));
+            note.setNoteValue(noteValue);
+            noteRepository.save(note);
+        }else {
+            int noteId = sequenceGeneratorService.generateSequence("noteId");
+            Note note = new Note();
+            note.setId(noteId);
+            note.setUserId(userService.getCurrentUser().getId());
+            note.setNoteValue(noteValue);
+            noteRepository.save(note);
+        }
         return true;
     }
 }

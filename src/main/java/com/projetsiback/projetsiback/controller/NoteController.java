@@ -5,22 +5,20 @@ import com.projetsiback.projetsiback.message.Message;
 import com.projetsiback.projetsiback.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class NoteController {
 
     @Autowired
     private NoteService noteService;
 
     @PostMapping("/noter/{noteValue}")
-    public ResponseEntity<Message> addNote(@PathVariable int noteValue) {
+    public ResponseEntity<?> addNote(@PathVariable int noteValue) {
         boolean noteValide = noteService.addNote(noteValue);
         if (noteValide) {
-            return ResponseEntity.ok().body(new Message("La note a été ajoutée avec succès."));
+            return ResponseEntity.ok().body(true);
         } else {
             return ResponseEntity.badRequest().body(new Message("La note n'a pas pu être ajoutée."));
         }

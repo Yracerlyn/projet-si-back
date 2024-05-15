@@ -16,12 +16,16 @@ public class CommandDtoMapper implements Function<Command, CommandDto> {
     private UserDtoMapper userDtoMapper;
     private ProductDtoMapper productDtoMapper;
 
+    private PurchaseDtoMapper purchaseDtoMapper;
+
     @Override
     public CommandDto apply(Command command) {
         return new CommandDto(
                 command.getId(),
                 userDtoMapper.apply(command.getUser()),
-                command.getProducts().stream().map(productDtoMapper).toList(),
-                command.getCommandDateTime());
+                command.getPurchases().stream().map(purchaseDtoMapper).toList(),
+                command.getCommandDateTime(),
+                command.getTotal(),
+                command.getDeliveryAddress());
     }
 }

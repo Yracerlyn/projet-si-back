@@ -21,7 +21,7 @@ public class Product {
     private long nbLike;
     private List<User> likedBy;
     private String category;
-    private double discount;
+    private Double discount;
     private double price;
     private String description;
     private int stock;

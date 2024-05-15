@@ -17,6 +17,8 @@ public class Command {
     @Id
     int id;
     private User user;
-    private List<Product> products;
+    private List<Purchase> purchases;
     LocalDateTime commandDateTime;
+    Double total;
+    String deliveryAddress;
 }
