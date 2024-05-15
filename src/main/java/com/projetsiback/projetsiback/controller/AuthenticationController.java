@@ -35,7 +35,7 @@ public class AuthenticationController {
             String token = jwtService.generateToken(user.getMail());
             return ResponseEntity.ok().body(new AuthResponse(token, user.getRole()));
         }catch(Exception e){
-            return ResponseEntity.badRequest().body(new Message(e.getMessage()));
+            return ResponseEntity.badRequest().body(new Message("Identifiants invalides"));
         }
     }
 
@@ -48,7 +48,7 @@ public class AuthenticationController {
             user.setLastName(registerRequest.getLastName());
             user.setAddress(registerRequest.getAddress());
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            user.setRole(Role.ADMIN);
+            user.setRole(Role.USER);
             user.setAccountStatus(AccountStatus.VALIDE);
             authService.register(user);
 

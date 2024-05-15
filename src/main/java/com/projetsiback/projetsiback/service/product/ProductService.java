@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,12 +55,12 @@ public class ProductService {
         Optional<User> user = userRepository.findById(userService.getCurrentUser().getId());
 
         if (product != null && user.isPresent()) {
-            if (!product.getLikedBy().contains(user.get())) {
-                product.getLikedBy().add(user.orElse(null));
-                product.setNbLike(product.getNbLike() + 1);
-                productRepository.save(product);
-                return true;
-            }
+            if( product.getLikedBy() == null)
+                product.setLikedBy(new ArrayList<>());
+            product.getLikedBy().add(user.orElse(null));
+            product.setNbLike(product.getNbLike() + 1);
+            productRepository.save(product);
+            return true;
         }
         return false;
     }
@@ -69,12 +70,12 @@ public class ProductService {
         User user = userRepository.findById(userService.getCurrentUser().getId()).orElse(null);
 
         if (product != null && user != null) {
-            if (product.getLikedBy().contains(user)) {
-                product.getLikedBy().remove(user);
-                product.setNbLike(product.getNbLike() - 1);
-                productRepository.save(product);
-                return true;
-            }
+            if( product.getLikedBy() == null)
+                return false;
+            product.getLikedBy().remove(user);
+            product.setNbLike(product.getNbLike() - 1);
+            productRepository.save(product);
+            return true;
         }
         return false;
     }
@@ -83,7 +84,7 @@ public class ProductService {
     public boolean addProduct(Product product) {
         int productId = sequenceGeneratorService.generateSequence("productId");
         product.setId(productId);
-        product.setAddedDate(LocalDateTime.now());
+        product.setAddedDate(new Date());
         product.setModifiedDate(LocalDateTime.now());
         product.setManagedBy(userService.getCurrentUser());
         product.setNbLike(0);

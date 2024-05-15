@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configure(httpSecurity))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/authentification/**")
+                        .requestMatchers("/authentification/**","/produit/get/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)

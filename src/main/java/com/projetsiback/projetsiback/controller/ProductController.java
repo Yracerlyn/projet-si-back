@@ -21,11 +21,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/produit")
+@CrossOrigin("http://localhost:3000")
 public class ProductController {
 
     private final ProductService productService;
-    private final UserService userService;
-    private final ProductDtoMapper productDtoMapper;
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategorieDto>> getAllCategories() {
@@ -33,13 +32,13 @@ public class ProductController {
         return ResponseEntity.ok().body(categories);
     }
 
-    @GetMapping("/get-all-produits/{categorie}")
+    @GetMapping("/get/all/{categorie}")
     public ResponseEntity<List<Product>> getAllProductsByCategory(@PathVariable String categorie) {
         List<Product> produits = productService.getAllProductsByCategory(categorie);
         return ResponseEntity.ok().body(produits);
     }
 
-    @GetMapping("/get-produit/{produitId}")
+    @GetMapping("/get/{produitId}")
     public ResponseEntity<Product> getProductById(@PathVariable int produitId) {
         Product produit = productService.getProductById(produitId);
         return ResponseEntity.ok().body(produit);
@@ -49,7 +48,7 @@ public class ProductController {
     public ResponseEntity<?> likeProduct(@PathVariable String produitId) {
         boolean produitLike = productService.likeProduct(Integer.parseInt(produitId));
         if (produitLike) {
-            return ResponseEntity.ok().body(new Like(userService.getCurrentUser(), productService.getProductById(Integer.parseInt(produitId)), LocalDateTime.now()));
+            return ResponseEntity.ok().body(true);
         } else {
             return ResponseEntity.internalServerError().body(new Message("Failed to like the product"));
         }
@@ -59,7 +58,7 @@ public class ProductController {
     public ResponseEntity<?> unlikeProduct(@PathVariable int produitId) {
         boolean produitLike = productService.unlikeProduct(produitId);
         if (produitLike) {
-            return ResponseEntity.badRequest().body(new Message("Unliked the product"));
+            return ResponseEntity.ok().body(true);
         } else {
             return ResponseEntity.internalServerError().body(new Message("Failed to unlike the product"));
         }
@@ -69,7 +68,7 @@ public class ProductController {
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
         boolean addedProduct = productService.addProduct(product);
         if (addedProduct) {
-            return ResponseEntity.ok().body(new Message("Produit ajouté avec succès. ID du produit : " + product.getId()));
+            return ResponseEntity.ok().body(true);
         } else {
             return ResponseEntity.internalServerError().body(new Message("Échec de l'ajout du produit"));
         }
@@ -78,7 +77,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable int productId) {
         Product product = productService.getProductById(productId);
         if(product.getStock() > 0){
-            return ResponseEntity.badRequest().body(new Message("Stock not empty"));
+            return ResponseEntity.badRequest().body(new Message("Le stock n'est pas à 0"));
         }
         boolean produitSupprime = productService.deleteProduct(productId);
         if (produitSupprime) {

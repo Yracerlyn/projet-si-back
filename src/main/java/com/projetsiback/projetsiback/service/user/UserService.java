@@ -1,6 +1,7 @@
 package com.projetsiback.projetsiback.service.user;
 
 import com.projetsiback.projetsiback.models.AccountStatus;
+import com.projetsiback.projetsiback.models.Role;
 import com.projetsiback.projetsiback.models.User;
 import com.projetsiback.projetsiback.repository.UserRepository;
 import com.projetsiback.projetsiback.service.JwtService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
 
     public List<User> findAllUsers(){
         return userRepository.findAll();
@@ -58,9 +59,14 @@ public class UserService implements UserDetailsService {
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
             existingUser.setAddress(updatedUser.getAddress());
+            existingUser.setAvatar(updatedUser.getAvatar());
             return userRepository.save(existingUser);
         }
         return null;
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findUsersByRole(Role.USER);
     }
 
     public User getCurrentUser() {
@@ -73,8 +79,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public boolean resetPassword(String email, String currentPassword, String newPassword) {
-        User user = userRepository.findByMailAndPassword(email, currentPassword);
+    public boolean resetPassword(User user, String newPassword) {
         if (user != null) {
             user.setPassword(newPassword);
             userRepository.save(user);

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public record ProductDto(
@@ -19,7 +20,7 @@ public record ProductDto(
         String description,
         String comment,
         UserDto managedBy,
-        LocalDateTime addedDate,
+        Date addedDate,
         LocalDateTime modifiedDate,
         int stock
         ) {

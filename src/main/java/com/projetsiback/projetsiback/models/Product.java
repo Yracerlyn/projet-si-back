@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -26,7 +27,7 @@ public class Product {
     private int stock;
     private String comment;
     private User managedBy;
-    private LocalDateTime addedDate;
+    private Date addedDate;
     private LocalDateTime modifiedDate;
     private String image;
 }

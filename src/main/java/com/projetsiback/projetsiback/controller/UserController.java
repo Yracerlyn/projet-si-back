@@ -12,28 +12,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
     private final UserDtoMapper userDtoMapper;
 
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable int userId) {
-        UserDto userDto = userDtoMapper.apply(userService.getUserById(userId));
-        if (userDto != null) {
-            return ResponseEntity.ok().body(userDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    private final PasswordEncoder passwordEncoder;
+    @GetMapping("/get-all")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok().body(userService.getAllUsers().stream().map(userDtoMapper).toList());
     }
 
-    @GetMapping("/user")
+
+    @GetMapping("/get")
     public ResponseEntity<UserDto> getCurrentUser() {
         return ResponseEntity.ok().body(userDtoMapper.apply(userService.getCurrentUser()));
     }
@@ -49,16 +49,19 @@ public class UserController {
     }
 
     @PostMapping("/reinitialiser-mot-de-passe")
-    public ResponseEntity<Boolean> resetPassword(@RequestBody NewPasswordRequest newPasswordRequest) {
+    public ResponseEntity<?> resetPassword(@RequestBody NewPasswordRequest newPasswordRequest) {
         User currentUser = userService.getCurrentUser();
-        boolean motDePasseChange = userService.resetPassword(currentUser.getMail(), newPasswordRequest.getCurrentPassword(), newPasswordRequest.getNewPassword());
+        if(!passwordEncoder.matches(newPasswordRequest.getCurrentPassword(),currentUser.getPassword())){
+            return ResponseEntity.badRequest().body(new Message("Le mot de passe actuel est eronné"));
+        }
+        boolean motDePasseChange = userService.resetPassword(currentUser, passwordEncoder.encode(newPasswordRequest.getNewPassword()));
         return ResponseEntity.ok().body(motDePasseChange);
     }
 
     @PostMapping("/reinitialiser-mot-de-passe-user")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Boolean> resetUserPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
-        boolean motDePasseChange = userService.resetUserPassword(resetPasswordRequest.getId(), resetPasswordRequest.getNewPassword());
+        boolean motDePasseChange = userService.resetUserPassword(resetPasswordRequest.getId(), passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         return ResponseEntity.ok().body(motDePasseChange);
     }
 
