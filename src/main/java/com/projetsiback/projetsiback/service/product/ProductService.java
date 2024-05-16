@@ -96,6 +96,8 @@ public class ProductService {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public boolean updateProduct(com.projetsiback.projetsiback.models.Product product) {
+        User user = userService.getUserById(product.getManagedBy().getId());
+        product.setManagedBy(user);
         productRepository.save(product);
         return true;
     }

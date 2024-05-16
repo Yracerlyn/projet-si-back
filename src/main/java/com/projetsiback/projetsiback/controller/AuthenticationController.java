@@ -11,6 +11,7 @@ import com.projetsiback.projetsiback.service.AuthService;
 import com.projetsiback.projetsiback.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,9 @@ public class AuthenticationController {
             User user = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
             String token = jwtService.generateToken(user.getMail());
             return ResponseEntity.ok().body(new AuthResponse(token, user.getRole()));
-        }catch(Exception e){
+        }catch(LockedException e){
+            return ResponseEntity.badRequest().body(new Message("Votre compte est suspendu"));
+        }catch (Exception e){
             return ResponseEntity.badRequest().body(new Message("Identifiants invalides"));
         }
     }
